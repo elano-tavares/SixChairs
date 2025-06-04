@@ -12,4 +12,4 @@ class Filme:
         self.diretor = diretor
     
     def __repr__(self):
-        return f"[{self.id}] {self.titulo} ({self.ano}) - {self.genero} | Dir: {self.diretor}"
+        return f"[{self.id}] {self.titulo} ({self.ano}) - {self.genero} | Diretor: {self.diretor}"

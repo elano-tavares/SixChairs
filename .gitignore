@@ -1,0 +1,24 @@
+# Bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Arquivos binários ou temporários
+*.bin
+*.dat
+*.idx
+*.tmp
+
+# Arquivos de dados brutos do IMDb (opcional manter localmente apenas)
+data/*.tsv
+
+# Configurações de IDEs
+.vscode/
+.idea/
+
+# Arquivos de log
+*.log
+
+# Sistema operacional (Windows/macOS/Linux)
+.DS_Store
+Thumbs.db

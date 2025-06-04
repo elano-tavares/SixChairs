@@ -9,6 +9,11 @@ from src.extrator import (
     extrair_filmes
 )
 
+from src.gravador import (
+    salvar_filmes_binario, 
+    ler_filmes_binario
+)
+
 def main():
     DATA_DIR = Path("data")
     NAMES_FILE = DATA_DIR / "name.basics.tsv"
@@ -34,10 +39,15 @@ def main():
 
     nomes_diretores = carregar_nome_diretores(NAMES_FILE)
     diretores_por_titulo = carregar_diretores_por_titulo(CREW_FILE)
+
     filmes = extrair_filmes(BASICS_FILE, diretores_por_titulo, nomes_diretores, limite=1000)
 
-    print("\n🎬 Exemplos de filmes extraídos:")
-    for f in filmes[:10]:
+    # Após extrair os filmes, salvar
+    salvar_filmes_binario(filmes)
+
+    filmes_lidos = ler_filmes_binario()
+    print("\n📂 Filmes lidos do arquivo binário:")
+    for f in filmes_lidos[:5]:
         print(f)
 
 if __name__ == "__main__":

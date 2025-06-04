@@ -2,8 +2,14 @@
 
 Esta pasta armazena os arquivos de entrada e saída do sistema.
 
-- Arquivos .tsv extraídos do IMDb (como name.basics.tsv, title.basics.tsv, title.crew.tsv)
-- Arquivos binários com os registros processados (ex: filmes.bin)
-- Arquivos auxiliares com índices salvos (como trie.idx, hash.idx, etc)
+Ela é usada pelos módulos da pasta `/src` e `/indices` para:
 
-Esta pasta não contém código, apenas dados de entrada e saída usados pelos módulos da pasta /src e /indices.
+- Receber os arquivos de entrada extraídos do IMDb (ex: `name.basics.tsv`, `title.basics.tsv`, `title.crew.tsv`)
+- Salvar os registros processados no formato binário (ex: `filmes.bin`)
+- Armazenar arquivos auxiliares de índice (ex: `trie.idx`, `hash.idx`, `arvore.idx`)
+
+⚠️ Observação:
+Por padrão, os arquivos `.tsv` originais do IMDb são ignorados pelo controle de versão (veja o arquivo `.gitignore`).  
+Cada colaborador deve obter os arquivos manualmente e colocá-los nesta pasta antes de executar o sistema.
+
+Esta pasta não contém código-fonte, apenas dados de entrada e saída.

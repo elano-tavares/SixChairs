@@ -1,6 +1,8 @@
+# extrator.py
+
 import csv
 from typing import List, Dict
-from filme import Filme
+from src.filme import Filme
 
 #---------------------------#
 #  Carregar_nome_diretores  #

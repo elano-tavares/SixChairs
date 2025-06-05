@@ -1,9 +1,10 @@
+# trie.py
 
 import pickle
 import struct
 from src.filme import Filme
 
-#constantes
+# constantes
 TAMANHO_REGISTRO = 236
 
 class TrieNode:
@@ -95,5 +96,3 @@ def buscar_titulos_por_prefixo(trie: Trie, prefixo: str, bin_path: str = "data/f
             )
             filmes.append(filme)
     return filmes
-
-

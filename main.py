@@ -74,11 +74,11 @@ def main():
     #------------------#
     
     #Mostra os títulos encontrados na Trie com o prefixo 
-    print("\n🔎 Teste: buscar por prefixo 'Hamlet '")
-    resultados = buscar_titulos_por_prefixo(trie, "Hamlet ")
+    print("\n🔎 Teste: buscar por prefixo 'Hamlet'")
+    resultados = buscar_titulos_por_prefixo(trie, "Hamlet")
     print(f"🔍 {len(resultados)} filme(s) encontrados:")
 
-    for f in resultados[:5]:
+    for f in resultados[:15]:
         print(f)
 
     #Mostra os primeiros filmes carregados

@@ -1,10 +1,7 @@
 from pathlib import Path
-from indices.trie import salvar_trie_em_arquivo, carregar_trie_de_arquivo
+from src.filme import Filme
 import sys
 import os
-from src.gravador import TAMANHO_REGISTRO, salvar_filmes_binario_com_trie
-from indices.trie import Trie
-from src.filme import Filme
 import struct
 
 from src.extrator import (
@@ -14,8 +11,17 @@ from src.extrator import (
 )
 
 from src.gravador import (
+    TAMANHO_REGISTRO,
+    salvar_filmes_binario_com_trie,
     salvar_filmes_binario, 
     ler_filmes_binario
+)
+
+from indices.trie import(
+    Trie,
+    salvar_trie_em_arquivo,
+    carregar_trie_de_arquivo,
+    buscar_titulos_por_prefixo    
 )
 
 def main():
@@ -71,39 +77,19 @@ def main():
     #      TESTES      #
     #------------------#
     
-    print("\n🔎 Teste: buscar por prefixo 'Hamlet '")
-    resultados = buscar_titulos_por_prefixo(trie, "Hamlet")
+    #Mostra os títulos encontrados na Trie com o prefixo 
+    print("\n🔎 Teste: buscar por prefixo 'The '")
+    resultados = buscar_titulos_por_prefixo(trie, "The ")
     print(f"🔍 {len(resultados)} filme(s) encontrados:")
 
     for f in resultados[:5]:
         print(f)
 
-    # Mostra os primeiros filmes carregados
-   # print("\n🎬 Exemplos de filmes carregados:")
-   # for f in filmes[:15]:
-   #     print(f)
+    #Mostra os primeiros filmes carregados
+    print("\n🎬 Exemplos de filmes carregados:")
+    for f in filmes[:15]:
+        print(f)
    
-def buscar_titulos_por_prefixo(trie: Trie, prefixo: str, bin_path: str = "data/filmes.bin") -> list[Filme]:
-    offsets = trie.buscar(prefixo)
-    filmes = []
-
-    with open(bin_path, "rb") as f:
-        for offset in offsets:
-            f.seek(offset)
-            bytes_lidos = f.read(TAMANHO_REGISTRO)
-            if not bytes_lidos:
-                continue
-            id_b, titulo_b, ano, genero_b, diretor_b = struct.unpack("10s100si20s100s", bytes_lidos)
-            filme = Filme(
-                id_b.decode("utf-8").rstrip("\x00"),
-                titulo_b.decode("utf-8").rstrip("\x00"),
-                ano,
-                genero_b.decode("utf-8").rstrip("\x00"),
-                diretor_b.decode("utf-8").rstrip("\x00")
-            )
-            filmes.append(filme)
-    return filmes
-
 
 
 if __name__ == "__main__":

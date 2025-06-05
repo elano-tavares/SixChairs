@@ -1,5 +1,7 @@
 
 import pickle
+import struct
+from src.filme import Filme
 
 class TrieNode:
     def __init__(self):
@@ -46,3 +48,30 @@ def salvar_trie_em_arquivo(trie: Trie, caminho: str):
 def carregar_trie_de_arquivo(caminho: str) -> Trie:
     with open(caminho, "rb") as f:
         return pickle.load(f)
+    
+
+
+TAMANHO_REGISTRO = 236
+
+def buscar_titulos_por_prefixo(trie: Trie, prefixo: str, bin_path: str = "data/filmes.bin") -> list[Filme]:
+    offsets = trie.buscar(prefixo)
+    filmes = []
+
+    with open(bin_path, "rb") as f:
+        for offset in offsets:
+            f.seek(offset)
+            bytes_lidos = f.read(TAMANHO_REGISTRO)
+            if not bytes_lidos:
+                continue
+            id_b, titulo_b, ano, genero_b, diretor_b = struct.unpack("10s100si20s100s", bytes_lidos)
+            filme = Filme(
+                id_b.decode("utf-8").rstrip("\x00"),
+                titulo_b.decode("utf-8").rstrip("\x00"),
+                ano,
+                genero_b.decode("utf-8").rstrip("\x00"),
+                diretor_b.decode("utf-8").rstrip("\x00")
+            )
+            filmes.append(filme)
+    return filmes
+
+

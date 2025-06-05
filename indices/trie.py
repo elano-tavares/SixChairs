@@ -3,6 +3,9 @@ import pickle
 import struct
 from src.filme import Filme
 
+#constantes
+TAMANHO_REGISTRO = 236
+
 class TrieNode:
     def __init__(self):
         self.filhos = {}
@@ -13,6 +16,10 @@ class TrieNode:
 class Trie:
     def __init__(self):
         self.raiz = TrieNode()
+        
+    #------------------#
+    #      Insere      #
+    #------------------#
 
     def inserir(self, titulo: str, offset: int):
         no = self.raiz
@@ -23,6 +30,10 @@ class Trie:
         no.fim_de_palavra = True
         no.offsets.append(offset)
 
+    #------------------#
+    #      Busca      #
+    #------------------#
+
     def buscar(self, prefixo: str) -> list[int]:
         no = self.raiz
         for char in prefixo.lower():
@@ -31,6 +42,10 @@ class Trie:
             no = no.filhos[char]
         return self._coletar_offsets(no)
 
+
+    #-------------------#
+    #      OffSets      #
+    #-------------------#
     def _coletar_offsets(self, no: TrieNode) -> list[int]:
         resultados = []
         if no.fim_de_palavra:
@@ -39,6 +54,11 @@ class Trie:
             resultados.extend(self._coletar_offsets(filho))
         return resultados
 
+
+
+ #-----------------------------#
+ #      Salva Trie em bin      #
+ #-----------------------------#
 
 def salvar_trie_em_arquivo(trie: Trie, caminho: str):
     with open(caminho, "wb") as f:
@@ -51,7 +71,9 @@ def carregar_trie_de_arquivo(caminho: str) -> Trie:
     
 
 
-TAMANHO_REGISTRO = 236
+ #-----------------------------#
+ #      Busca Por Prefixo      #
+ #-----------------------------#
 
 def buscar_titulos_por_prefixo(trie: Trie, prefixo: str, bin_path: str = "data/filmes.bin") -> list[Filme]:
     offsets = trie.buscar(prefixo)

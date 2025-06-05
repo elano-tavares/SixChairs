@@ -1,8 +1,5 @@
 from pathlib import Path
-from src.filme import Filme
 import sys
-import os
-import struct
 
 from src.extrator import (
     carregar_nome_diretores,
@@ -11,14 +8,12 @@ from src.extrator import (
 )
 
 from src.gravador import (
-    TAMANHO_REGISTRO,
     salvar_filmes_binario_com_trie,
     salvar_filmes_binario, 
     ler_filmes_binario
 )
 
 from indices.trie import(
-    Trie,
     salvar_trie_em_arquivo,
     carregar_trie_de_arquivo,
     buscar_titulos_por_prefixo    
@@ -33,6 +28,7 @@ def main():
         print("📦 Arquivo binário encontrado. Carregando dados salvos...")
         filmes = ler_filmes_binario(BIN_FILE)
         
+        # Cria a TRIE a partir dos filmes já carregados em filmes.bin
         trie = salvar_filmes_binario_com_trie(filmes, str(BIN_FILE))
         salvar_trie_em_arquivo(trie, "data/trie.idx")
         print("💾 Filmes extraídos, TRIE construída e ambos salvos com sucesso.")
@@ -78,8 +74,8 @@ def main():
     #------------------#
     
     #Mostra os títulos encontrados na Trie com o prefixo 
-    print("\n🔎 Teste: buscar por prefixo 'The '")
-    resultados = buscar_titulos_por_prefixo(trie, "The ")
+    print("\n🔎 Teste: buscar por prefixo 'Hamlet '")
+    resultados = buscar_titulos_por_prefixo(trie, "Hamlet ")
     print(f"🔍 {len(resultados)} filme(s) encontrados:")
 
     for f in resultados[:5]:
@@ -91,6 +87,6 @@ def main():
         print(f)
    
 
-
+#chama a função principal main()
 if __name__ == "__main__":
     main()

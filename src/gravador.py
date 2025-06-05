@@ -3,6 +3,7 @@
 import struct
 from typing import List
 from src.filme import Filme
+from indices.trie import Trie
 
 # Caminho padrão do arquivo binário
 ARQUIVO_BINARIO = "data/filmes.bin"
@@ -57,3 +58,26 @@ def ler_filmes_binario(caminho: str = ARQUIVO_BINARIO) -> List[Filme]:
     except FileNotFoundError:
         print(f"⚠️ Arquivo binário não encontrado: {caminho}")
     return filmes
+
+
+#---------------------------#
+#  Salvar_filmes__bin_trie  #
+#---------------------------#
+
+def salvar_filmes_binario_com_trie(filmes: List[Filme], caminho: str = ARQUIVO_BINARIO) -> Trie:
+    trie = Trie()
+    with open(caminho, "wb") as f:
+        for i, filme in enumerate(filmes):
+            offset = i * TAMANHO_REGISTRO
+            registro = struct.pack(
+                FORMATO_REGISTRO,
+                filme.id.encode("utf-8")[:10].ljust(10, b"\x00"),
+                filme.titulo.encode("utf-8")[:100].ljust(100, b"\x00"),
+                filme.ano,
+                filme.genero.encode("utf-8")[:20].ljust(20, b"\x00"),
+                filme.diretor.encode("utf-8")[:100].ljust(100, b"\x00"),
+            )
+            f.write(registro)
+            trie.inserir(filme.titulo, offset)
+    print(f"✅ {len(filmes)} filmes salvos no binário e TRIE construída.")
+    return trie

@@ -1,3 +1,5 @@
+# main.py
+
 from pathlib import Path
 import sys
 
@@ -13,27 +15,49 @@ from src.gravador import (
     ler_filmes_binario
 )
 
-from indices.trie import(
+from indices.trie import (
     salvar_trie_em_arquivo,
     carregar_trie_de_arquivo,
     buscar_titulos_por_prefixo    
 )
 
+from indices.hash import (
+    construir_indice_hash_por_diretor, 
+    salvar_hash_em_arquivo, 
+    carregar_hash_de_arquivo,
+    buscar_filmes_por_diretor
+)
+
+
 def main():
     DATA_DIR = Path("data")
     BIN_FILE = DATA_DIR / "filmes.bin"
+    TRIE_FILE = DATA_DIR / "trie.idx"
+    HASH_FILE = DATA_DIR / "hash.idx"
 
-    # Se o arquivo binário já existe, lê diretamente
+    # Se o binário já existe, carregamos os filmes
     if BIN_FILE.exists():
         print("📦 Arquivo binário encontrado. Carregando dados salvos...")
         filmes = ler_filmes_binario(BIN_FILE)
-        
-        # Cria a TRIE a partir dos filmes já carregados em filmes.bin
-        trie = salvar_filmes_binario_com_trie(filmes, str(BIN_FILE))
-        salvar_trie_em_arquivo(trie, "data/trie.idx")
-        print("💾 Filmes extraídos, TRIE construída e ambos salvos com sucesso.")
 
-        
+        # TRIE
+        if TRIE_FILE.exists():
+            trie = carregar_trie_de_arquivo(TRIE_FILE)
+            print("✅ TRIE carregada de data/trie.idx")
+        else:
+            trie = salvar_filmes_binario_com_trie(filmes, str(BIN_FILE))
+            salvar_trie_em_arquivo(trie, TRIE_FILE)
+            print("📁 TRIE construída e salva em data/trie.idx")
+
+        # HASH
+        if HASH_FILE.exists():
+            hash_diretor = carregar_hash_de_arquivo(HASH_FILE)
+            print("✅ Índice hash por diretor carregado de data/hash.idx")
+        else:
+            hash_diretor = construir_indice_hash_por_diretor(filmes)
+            salvar_hash_em_arquivo(hash_diretor, HASH_FILE)
+            print("📁 Índice hash por diretor construído e salvo em data/hash.idx")
+
     else:
         print("📤 Arquivo binário não encontrado. Preparando extração dos arquivos TSV...")
 
@@ -61,32 +85,34 @@ def main():
         diretores_por_titulo = carregar_diretores_por_titulo(CREW_FILE)
         filmes = extrair_filmes(BASICS_FILE, diretores_por_titulo, nomes_diretores, limite=1000)
 
-        salvar_filmes_binario(filmes, str(BIN_FILE))
-        print("💾 Filmes extraídos e salvos com sucesso.")
+        # Salva binário, TRIE e hash
+        trie = salvar_filmes_binario_com_trie(filmes, str(BIN_FILE))
+        salvar_trie_em_arquivo(trie, TRIE_FILE)
 
-        filmes = ler_filmes_binario(BIN_FILE)
-        trie = carregar_trie_de_arquivo("data/trie.idx")
+        hash_diretor = construir_indice_hash_por_diretor(filmes)
+        salvar_hash_em_arquivo(hash_diretor, HASH_FILE)
 
-
+        print("💾 Filmes, TRIE e índice hash salvos com sucesso.")
 
     #------------------#
     #      TESTES      #
     #------------------#
+    print("\n🔍 Teste: buscar por diretor 'Mario Caserini'")
+    filmes_encontrados = buscar_filmes_por_diretor("Mario Caserini", hash_diretor)
+    for filme in filmes_encontrados[:15]:
+        print(filme)
     
-    #Mostra os títulos encontrados na Trie com o prefixo 
     print("\n🔎 Teste: buscar por prefixo 'Hamlet'")
     resultados = buscar_titulos_por_prefixo(trie, "Hamlet")
     print(f"🔍 {len(resultados)} filme(s) encontrados:")
-
     for f in resultados[:15]:
         print(f)
 
-    #Mostra os primeiros filmes carregados
     print("\n🎬 Exemplos de filmes carregados:")
     for f in filmes[:15]:
         print(f)
-   
 
-#chama a função principal main()
+
+# Chama a função principal
 if __name__ == "__main__":
     main()

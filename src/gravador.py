@@ -59,11 +59,9 @@ def ler_filmes_binario(caminho: str = ARQUIVO_BINARIO) -> List[Filme]:
         print(f"⚠️ Arquivo binário não encontrado: {caminho}")
     return filmes
 
-
 #---------------------------#
 #  Salvar_filmes__bin_trie  #
 #---------------------------#
-
 def salvar_filmes_binario_com_trie(filmes: List[Filme], caminho: str = ARQUIVO_BINARIO) -> Trie:
     trie = Trie()
     with open(caminho, "wb") as f:

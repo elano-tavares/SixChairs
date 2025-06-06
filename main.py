@@ -32,7 +32,9 @@ from indices.arvore import (
     construir_indice_ano,
     salvar_indice_em_arquivo,
     carregar_indice_de_arquivo,
-    buscar_filmes_por_ano
+    buscar_filmes_por_ano,
+    construir_indice_id,
+    buscar_filme_por_id
 )
 
 def main():
@@ -41,6 +43,8 @@ def main():
     TRIE_FILE = DATA_DIR / "trie.idx"
     HASH_FILE = DATA_DIR / "hash.idx"
     INDICE_ANO_FILE = DATA_DIR / "b_ano.idx"
+    INDICE_ID_FILE = DATA_DIR / "b_id.idx"
+
 
 
     # Se o binário já existe, carregamos os filmes
@@ -75,6 +79,14 @@ def main():
             salvar_indice_em_arquivo(indice_ano, INDICE_ANO_FILE)
             print("📁 Índice B por ano construído e salvo em data/b_ano.idx")
 
+        # Índice B por ID
+        if INDICE_ID_FILE.exists():
+            indice_id = carregar_indice_de_arquivo(INDICE_ID_FILE)
+            print("✅ Índice B por ID carregado de data/b_id.idx")
+        else:
+            indice_id = construir_indice_id(filmes)
+            salvar_indice_em_arquivo(indice_id, INDICE_ID_FILE)
+            print("📁 Índice B por ID construído e salvo em data/b_id.idx")
 
     else:
         print("📤 Arquivo binário não encontrado. Preparando extração dos arquivos TSV...")
@@ -103,7 +115,7 @@ def main():
         diretores_por_titulo = carregar_diretores_por_titulo(CREW_FILE)
         filmes = extrair_filmes(BASICS_FILE, diretores_por_titulo, nomes_diretores, limite=1000)
 
-        # Salva binário, TRIE e hash
+        # Salva binário, TRIE, hash e árvore B
         trie = salvar_filmes_binario_com_trie(filmes, str(BIN_FILE))
         salvar_trie_em_arquivo(trie, TRIE_FILE)
 
@@ -113,12 +125,21 @@ def main():
         indice_ano = construir_indice_ano(filmes)
         salvar_indice_em_arquivo(indice_ano, INDICE_ANO_FILE)
 
+        indice_id = construir_indice_id(filmes)
+        salvar_indice_em_arquivo(indice_id, INDICE_ID_FILE)
 
         print("💾 Filmes, TRIE, índice hash e árvore B salvos com sucesso.")
 
     #------------------#
     #      TESTES      #
     #------------------#
+
+    print("\n🆔 Teste: buscar filme por ID 'tt0000630'")
+    filme_id = buscar_filme_por_id(indice_id, "tt0000630")
+    if filme_id:
+        print("Encontrado:", filme_id)
+    else:
+        print("❌ Filme não encontrado.")
 
     print("\n📆 Teste: buscar filmes do ano 1910")
     resultados_ano = buscar_filmes_por_ano(indice_ano, 1910)

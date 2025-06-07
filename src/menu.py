@@ -8,7 +8,7 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
         print("2. Buscar por diretor")
         print("3. Buscar por ano")
         print("4. Buscar por ID")
-        print("5. Buscar por genêro")
+        print("5. Buscar por gênero")
         print("6. Combinação de filtros")
         print("0. Sair")
         opcao = input("Escolha uma opção: ")

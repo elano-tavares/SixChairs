@@ -5,6 +5,10 @@ from indices.hash import buscar_filmes_por_diretor
 from indices.arvore import buscar_filmes_por_ano, buscar_filme_por_id
 from src.gravador import TAMANHO_REGISTRO
 
+#--------------------#
+#  Busca por Gênero  #
+#--------------------#
+
 def buscar_filmes_por_genero(genero: str, caminho_bin="data/filmes.bin") -> list[Filme]:
     genero = genero.lower()
     resultados = []
@@ -28,6 +32,10 @@ def buscar_filmes_por_genero(genero: str, caminho_bin="data/filmes.bin") -> list
                 )
                 resultados.append(filme)
     return resultados
+
+#---------------------#
+#  Busca com Filtros  #
+#---------------------#
 
 def buscar_filmes_com_filtros(
     prefixo_titulo: str | None,

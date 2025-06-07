@@ -77,5 +77,5 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
             print("🔍 Nenhum filme encontrado com os filtros informados.")
         else:
             print(f"🔎 {len(resultados)} resultado(s) encontrado(s):")
-            for f in resultados[:100]:
+            for f in resultados[:10]:
                 print("🔸", f)

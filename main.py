@@ -2,6 +2,8 @@
 
 from pathlib import Path
 import sys
+from src.buscas import buscar_filmes_com_filtros
+
 
 from src.extrator import (
     carregar_nome_diretores,
@@ -165,6 +167,52 @@ def main():
     print("\n🎬 Exemplos de filmes carregados:")
     for f in filmes[:15]:
         print(f)
+        
+    
+    print("\n🎯 Teste combinado: diretor = 'Mario Caserini' e título começa com 'Hamlet'")
+    resultados = buscar_filmes_com_filtros(
+        prefixo_titulo="Hamlet",
+        diretor="Mario Caserini",
+        ano=None,
+        id_filme=None,
+        trie=trie,
+        hash_diretor=hash_diretor,
+        indice_ano=indice_ano,
+        indice_id=indice_id,
+        caminho_bin="data/filmes.bin"
+    )
+    for filme in resultados:
+        print("🔸", filme)
+
+    print("\n🎯 Teste combinado: ano = 1910 e título = 'Hamlet'")
+    resultados = buscar_filmes_com_filtros(
+        prefixo_titulo="Hamlet",
+        diretor=None,
+        ano=1908,
+        id_filme=None,
+        trie=trie,
+        hash_diretor=hash_diretor,
+        indice_ano=indice_ano,
+        indice_id=indice_id,
+        caminho_bin="data/filmes.bin"
+    )
+    for filme in resultados:
+        print("🔸", filme)
+
+    print("\n🎯 Teste: buscar só por ID 'tt0000630'")
+    resultado = buscar_filmes_com_filtros(
+        prefixo_titulo=None,
+        diretor=None,
+        ano=None,
+        id_filme="tt0000630",
+        trie=trie,
+        hash_diretor=hash_diretor,
+        indice_ano=indice_ano,
+        indice_id=indice_id,
+        caminho_bin="data/filmes.bin"
+    )
+    for filme in resultado:
+        print("🔸", filme)
 
 
 # Chama a função principal

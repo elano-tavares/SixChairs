@@ -8,7 +8,8 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
         print("2. Buscar por diretor")
         print("3. Buscar por ano")
         print("4. Buscar por ID")
-        print("5. Combinação de filtros")
+        print("5. Buscar por genêro")
+        print("6. Combinação de filtros")
         print("0. Sair")
         opcao = input("Escolha uma opção: ")
 
@@ -31,7 +32,11 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
                 continue
         elif opcao == "4":
             id_filme = input("Digite o ID do filme (ex: tt0000001): ")
+            
         elif opcao == "5":
+            genero = input("Digite o gênero do filme: ")
+
+        elif opcao == "6":
             txt = input("Prefixo do título (ou Enter): ")
             prefixo = txt if txt else None
 
@@ -48,6 +53,9 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
 
             txt = input("ID do filme (ou Enter): ")
             id_filme = txt if txt else None
+            
+            txt = input("Gênero (ou Enter): ")
+            genero = txt if txt else None
         else:
             print("❌ Opção inválida.")
             continue
@@ -57,6 +65,7 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
             diretor=diretor,
             ano=ano,
             id_filme=id_filme,
+            genero=genero,
             trie=trie,
             hash_diretor=hash_diretor,
             indice_ano=indice_ano,
@@ -68,5 +77,5 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
             print("🔍 Nenhum filme encontrado com os filtros informados.")
         else:
             print(f"🔎 {len(resultados)} resultado(s) encontrado(s):")
-            for f in resultados[:10]:
+            for f in resultados[:100]:
                 print("🔸", f)

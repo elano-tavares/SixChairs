@@ -1,11 +1,8 @@
+import struct
 from src.filme import Filme
 from indices.trie import buscar_titulos_por_prefixo
 from indices.hash import buscar_filmes_por_diretor
 from indices.arvore import buscar_filmes_por_ano, buscar_filme_por_id
-
-
-import struct
-from src.filme import Filme
 from src.gravador import TAMANHO_REGISTRO
 
 def buscar_filmes_por_genero(genero: str, caminho_bin="data/filmes.bin") -> list[Filme]:

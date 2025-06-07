@@ -13,7 +13,6 @@ from src.extrator import (
 
 from src.gravador import (
     salvar_filmes_binario_com_trie,
-    salvar_filmes_binario, 
     ler_filmes_binario
 )
 
@@ -167,7 +166,6 @@ def main():
     print("\n🎬 Exemplos de filmes carregados:")
     for f in filmes[:15]:
         print(f)
-        
     
     print("\n🎯 Teste combinado: diretor = 'Mario Caserini' e título começa com 'Hamlet'")
     resultados = buscar_filmes_com_filtros(

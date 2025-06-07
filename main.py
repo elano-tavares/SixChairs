@@ -188,7 +188,7 @@ def main():
     resultados = buscar_filmes_com_filtros(
         prefixo_titulo="Hamlet",
         diretor=None,
-        ano=1908,
+        ano=1910,
         id_filme=None,
         trie=trie,
         hash_diretor=hash_diretor,

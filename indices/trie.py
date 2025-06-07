@@ -53,8 +53,6 @@ class Trie:
             resultados.extend(self._coletar_offsets(filho))
         return resultados
 
-
-
  #-----------------------------#
  #      Salva Trie em bin      #
  #-----------------------------#

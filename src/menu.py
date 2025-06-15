@@ -19,6 +19,7 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
 
         prefixo = diretor = id_filme = None
         ano = None
+        genero = None
 
         if opcao == "1":
             prefixo = input("Digite o prefixo do título: ")

@@ -132,42 +132,7 @@ def main():
 
         print("💾 Filmes, TRIE, índice hash e árvore B salvos com sucesso.")
 
-    #------------------#
-    #      TESTES      #
-    #------------------#
-
-    print("\n🆔 Teste: buscar filme por ID 'tt0000630'")
-    filme_id = buscar_filme_por_id(indice_id, "tt0000630")
-    if filme_id:
-        print("Encontrado:", filme_id)
-    else:
-        print("❌ Filme não encontrado.")
-
-    print("\n📆 Teste: buscar filmes do ano 1910")
-    resultados_ano = buscar_filmes_por_ano(indice_ano, 1910)
-    for f in resultados_ano[:15]:
-        print(f)
-
-    print("\n📆 Teste: buscar filmes entre 1908 e 1912")
-    resultados_intervalo = buscar_filmes_por_ano(indice_ano, (1908, 1912))
-    for f in resultados_intervalo[:15]:
-        print(f)
-
-    print("\n🔍 Teste: buscar por diretor 'Mario Caserini'")
-    filmes_encontrados = buscar_filmes_por_diretor("Mario Caserini", hash_diretor)
-    for filme in filmes_encontrados[:15]:
-        print(filme)
-    
-    print("\n🔎 Teste: buscar por prefixo 'the'")
-    resultados = buscar_titulos_por_prefixo(trie, "the")
-    print(f"🔍 {len(resultados)} filme(s) encontrados:")
-    for f in resultados[:15]:
-        print(f)
-
-    print("\n🎬 Exemplos de filmes carregados:")
-    for f in filmes[:15]:
-        print(f)
-    
+    # Exibe o menu de busca interativa
     menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id)
 
 # Chama a função principal

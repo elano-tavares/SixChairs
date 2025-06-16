@@ -1,8 +1,11 @@
+# menu.py
+
 from src.buscas import buscar_filmes_com_filtros
 from src.gravador import importar_filmes_em_lote
 from indices.trie import salvar_trie_em_arquivo
 from indices.hash import salvar_hash_em_arquivo
 from indices.arvore import salvar_indice_em_arquivo
+from src.estatisticas import gerar_estatisticas
 
 def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin="data/filmes.bin"):
     print("\n📚 Bem-vindo ao sistema de busca SixChairs!")
@@ -18,6 +21,7 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
             print("5. Buscar por gênero")
             print("6. Combinação de filtros")
             print("7. Importar novo lote de filmes (TSV)")
+            print("8. Ver estatísticas")
             print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -90,6 +94,12 @@ def menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id, caminho_bin
 
             mostrar_menu = True
             continue
+
+        elif opcao == "8":
+            gerar_estatisticas(caminho_bin)
+            mostrar_menu = True
+            continue
+
         else:
             print("❌ Opção inválida.")
             mostrar_menu = True

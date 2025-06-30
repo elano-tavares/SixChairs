@@ -53,24 +53,24 @@ class Trie:
             resultados.extend(self._coletar_offsets(filho))
         return resultados
 
- #-----------------------------#
- #      Salva Trie em bin      #
- #-----------------------------#
+#-----------------------------#
+#      Salva Trie em bin      #
+#-----------------------------#
 def salvar_trie_em_arquivo(trie: Trie, caminho: str):
     with open(caminho, "wb") as f:
         pickle.dump(trie, f)
     print(f"📁 TRIE salva em: {caminho}")
 
- #-----------------------------#
- #      Carregar Trie          #
- #-----------------------------#
+#-----------------------------#
+#      Carregar Trie          #
+#-----------------------------#
 def carregar_trie_de_arquivo(caminho: str) -> Trie:
     with open(caminho, "rb") as f:
         return pickle.load(f)
     
- #-----------------------------#
- #      Busca Por Prefixo      #
- #-----------------------------#
+#-----------------------------#
+#      Busca Por Prefixo      #
+#-----------------------------#
 def buscar_titulos_por_prefixo(trie: Trie, prefixo: str, bin_path: str = "data/filmes.bin") -> list[Filme]:
     offsets = trie.buscar(prefixo)
     filmes = []

@@ -1,99 +1,37 @@
-# main.py
+# main.py (MODIFICADO)
 
 from pathlib import Path
-from src.buscas import buscar_filmes_com_filtros
-from src.menu import menu_busca_interativa
 import sys
 
-
+# Importa funções do extrator que são usadas para a extração inicial dos TSVs
 from src.extrator import (
     carregar_nome_diretores,
     carregar_diretores_por_titulo,
     extrair_filmes
 )
 
-from src.gravador import (
-    salvar_filmes_binario_com_trie,
-    ler_filmes_binario
-)
+# Importa funções do binary_store para salvar o binário inicial
+from src.binary_store import salvar_filmes_binario, ler_filmes_binario # ler_filmes_binario pode ser útil aqui
 
-from indices.trie import (
-    salvar_trie_em_arquivo,
-    carregar_trie_de_arquivo,
-    buscar_titulos_por_prefixo    
-)
+# Importa o novo IndexBuilder, que gerencia todos os índices
+from src.index_builder import IndexBuilder
 
-from indices.hash import (
-    construir_indice_hash_por_diretor, 
-    salvar_hash_em_arquivo, 
-    carregar_hash_de_arquivo,
-    buscar_filmes_por_diretor
-)
-
-from indices.arvore import (
-    construir_indice_ano,
-    salvar_indice_em_arquivo,
-    carregar_indice_de_arquivo,
-    buscar_filmes_por_ano,
-    construir_indice_id,
-    buscar_filme_por_id
-)
+# Importa a nova interface de linha de comando
+from src.cli import menu_principal
 
 def main():
     DATA_DIR = Path("data")
     BIN_FILE = DATA_DIR / "filmes.bin"
-    TRIE_FILE = DATA_DIR / "trie.idx"
-    HASH_FILE = DATA_DIR / "hash.idx"
-    INDICE_ANO_FILE = DATA_DIR / "b_ano.idx"
-    INDICE_ID_FILE = DATA_DIR / "b_id.idx"
+    
+    # Instancia o IndexBuilder, passando o caminho do arquivo binário principal
+    index_builder = IndexBuilder(str(BIN_FILE))
 
+    # Tenta carregar os índices existentes e o arquivo binário
+    # Se o BIN_FILE não existe OU os índices não puderam ser carregados, reconstruir
+    if not BIN_FILE.exists() or not index_builder.carregar_todos_indices():
+        print("📤 Arquivo binário ou um ou mais índices não encontrados/válidos. Preparando extração dos arquivos TSV...")
 
-
-    # Se o binário já existe, carregamos os filmes
-    if BIN_FILE.exists():
-        print("📦 Arquivo binário encontrado. Carregando dados salvos...")
-        filmes = ler_filmes_binario(BIN_FILE)
-
-        # TRIE
-        if TRIE_FILE.exists():
-            trie = carregar_trie_de_arquivo(TRIE_FILE)
-            print("✅ TRIE carregada de data/trie.idx")
-        else:
-            trie = salvar_filmes_binario_com_trie(filmes, str(BIN_FILE))
-            salvar_trie_em_arquivo(trie, TRIE_FILE)
-            print("📁 TRIE construída e salva em data/trie.idx")
-
-        # HASH
-        if HASH_FILE.exists():
-            hash_diretor = carregar_hash_de_arquivo(HASH_FILE)
-            print("✅ Índice hash por diretor carregado de data/hash.idx")
-        else:
-            hash_diretor = construir_indice_hash_por_diretor(filmes)
-            salvar_hash_em_arquivo(hash_diretor, HASH_FILE)
-            print("📁 Índice hash por diretor construído e salvo em data/hash.idx")
-
-        # ÍNDICE B por ano
-        if INDICE_ANO_FILE.exists():
-            indice_ano = carregar_indice_de_arquivo(INDICE_ANO_FILE)
-            print("✅ Índice B por ano carregado de data/b_ano.idx")
-        else:
-            indice_ano = construir_indice_ano(filmes)
-            salvar_indice_em_arquivo(indice_ano, INDICE_ANO_FILE)
-            print("📁 Índice B por ano construído e salvo em data/b_ano.idx")
-
-        # Índice B por ID
-        if INDICE_ID_FILE.exists():
-            indice_id = carregar_indice_de_arquivo(INDICE_ID_FILE)
-            print("✅ Índice B por ID carregado de data/b_id.idx")
-        else:
-            indice_id = construir_indice_id(filmes)
-            salvar_indice_em_arquivo(indice_id, INDICE_ID_FILE)
-            print("📁 Índice B por ID construído e salvo em data/b_id.idx")
-
-    else:
-        print("📤 Arquivo binário não encontrado. Preparando extração dos arquivos TSV...")
-
-        # Verifica se os arquivos .tsv existem
+        # Verifica se os arquivos .tsv necessários existem na pasta data/
         NAMES_FILE = DATA_DIR / "name.basics.tsv"
         CREW_FILE = DATA_DIR / "title.crew.tsv"
         BASICS_FILE = DATA_DIR / "title.basics.tsv"
@@ -109,32 +47,33 @@ def main():
 
         if not arquivos_ok:
             print("⚠️  Certifique-se de que todos os arquivos .tsv estejam disponíveis na pasta 'data/'")
-            sys.exit(1)
+            sys.exit(1) # Sai do programa se os arquivos TSV não estiverem presentes
 
-        print("✅ Todos os arquivos foram encontrados. Extraindo e salvando...")
+        print("✅ Todos os arquivos foram encontrados. Extraindo e salvando filmes...")
 
-        nomes_diretores = carregar_nome_diretores(NAMES_FILE)
-        diretores_por_titulo = carregar_diretores_por_titulo(CREW_FILE)
-        filmes = extrair_filmes(BASICS_FILE, diretores_por_titulo, nomes_diretores, limite=1000)
+        # Carrega os dados brutos e extrai os objetos Filme
+        nomes_diretores = carregar_nome_diretores(str(NAMES_FILE))
+        diretores_por_titulo = carregar_diretores_por_titulo(str(CREW_FILE))
+        filmes_extraidos = extrair_filmes(str(BASICS_FILE), diretores_por_titulo, nomes_diretores, limite=1000)
 
-        # Salva binário, TRIE, hash e árvore B
-        trie = salvar_filmes_binario_com_trie(filmes, str(BIN_FILE))
-        salvar_trie_em_arquivo(trie, TRIE_FILE)
+        # Salva a lista de filmes extraídos no arquivo binário
+        salvar_filmes_binario(filmes_extraidos, str(BIN_FILE))
+        print(f"✅ {len(filmes_extraidos)} filmes salvos inicialmente em: {BIN_FILE}")
 
-        hash_diretor = construir_indice_hash_por_diretor(filmes)
-        salvar_hash_em_arquivo(hash_diretor, HASH_FILE)
+        # Constrói todos os índices a partir dos filmes recém-salvos
+        index_builder.construir_todos_indices(filmes_extraidos)
+        
+        # Salva os índices recém-construídos para persistência
+        index_builder.salvar_todos_indices()
+        print("💾 Filmes e todos os índices (TRIE, Hash, B-Tree) salvos com sucesso.")
 
-        indice_ano = construir_indice_ano(filmes)
-        salvar_indice_em_arquivo(indice_ano, INDICE_ANO_FILE)
+    else:
+        print("✅ Dados e índices carregados com sucesso de arquivos existentes.")
 
-        indice_id = construir_indice_id(filmes)
-        salvar_indice_em_arquivo(indice_id, INDICE_ID_FILE)
+    # Inicia a interface de linha de comando, passando o index_builder
+    # A CLI agora gerenciará as interações de busca e importação
+    menu_principal(index_builder, str(BIN_FILE))
 
-        print("💾 Filmes, TRIE, índice hash e árvore B salvos com sucesso.")
-
-    # Exibe o menu de busca interativa
-    menu_busca_interativa(trie, hash_diretor, indice_ano, indice_id)
-
-# Chama a função principal
+# Chama a função principal quando o script é executado
 if __name__ == "__main__":
     main()

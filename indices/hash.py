@@ -1,18 +1,22 @@
-# hash.py
+# indices/hash.py (MODIFICADO - Correção de Importação)
 
 import pickle
-import struct
 from collections import defaultdict
-from src.filme import Filme
-from src.gravador import TAMANHO_REGISTRO
+from src.filme import Filme # <-- MODIFICADO AQUI: Importa APENAS a classe Filme
+from src.binary_store import ler_filme_por_offset
 
 #--------------------------------#
 #      Construir índice hash     #
 #--------------------------------#
-def construir_indice_hash_por_diretor(filmes: list) -> dict[str, list[int]]:
+def construir_indice_hash_por_diretor(filmes: list[Filme]) -> dict[str, list[int]]:
+    """
+    Constrói um índice hash que mapeia nomes de diretores para
+    listas de offsets de filmes no arquivo binário.
+    """
     hash_diretor = defaultdict(list)
-    for offset, filme in enumerate(filmes):
-        posicao = offset * TAMANHO_REGISTRO  # 234 bytes fixos
+    for i, filme in enumerate(filmes): 
+        # Acessa TAMANHO_REGISTRO via Filme.TAMANHO_REGISTRO
+        posicao = i * Filme.TAMANHO_REGISTRO 
         hash_diretor[filme.diretor].append(posicao)
     return hash_diretor
 
@@ -20,13 +24,20 @@ def construir_indice_hash_por_diretor(filmes: list) -> dict[str, list[int]]:
 #      Salvar hash em arquivo      #
 #----------------------------------#
 def salvar_hash_em_arquivo(hash_diretor: dict[str, list[int]], caminho: str) -> None:
+    """
+    Salva o índice hash (dicionário) em um arquivo binário usando pickle.
+    """
     with open(caminho, "wb") as f:
         pickle.dump(hash_diretor, f)
+    print(f"📁 Índice Hash salvo em: {caminho}")
 
 #----------------------------------#
 #      Carregar hash do arquivo    #
 #----------------------------------#
 def carregar_hash_de_arquivo(caminho: str) -> dict[str, list[int]]:
+    """
+    Carrega o índice hash (dicionário) de um arquivo binário usando pickle.
+    """
     with open(caminho, "rb") as f:
         return pickle.load(f)
 
@@ -34,23 +45,16 @@ def carregar_hash_de_arquivo(caminho: str) -> dict[str, list[int]]:
 #      Buscar por diretor          #
 #----------------------------------#
 def buscar_filmes_por_diretor(nome_diretor: str, hash_diretor: dict[str, list[int]], caminho_bin: str = "data/filmes.bin") -> list[Filme]:
+    """
+    Busca filmes pelo nome do diretor usando o índice hash.
+    Retorna uma lista de objetos Filme.
+    """
     if nome_diretor not in hash_diretor:
         return []
 
     filmes = []
-    with open(caminho_bin, "rb") as f:
-        for offset in hash_diretor[nome_diretor]:
-            f.seek(offset)
-            dados = f.read(TAMANHO_REGISTRO)
-            if not dados:
-                continue
-            id_b, titulo_b, ano, genero_b, diretor_b = struct.unpack("10s100si20s100s", dados)
-            filme = Filme(
-                id_b.decode("utf-8").rstrip("\x00"),
-                titulo_b.decode("utf-8").rstrip("\x00"),
-                ano,
-                genero_b.decode("utf-8").rstrip("\x00"),
-                diretor_b.decode("utf-8").rstrip("\x00")
-            )
+    for offset in hash_diretor[nome_diretor]:
+        filme = ler_filme_por_offset(offset, caminho_bin)
+        if filme:
             filmes.append(filme)
     return filmes

@@ -11,6 +11,7 @@ __pycache__/
 
 # Arquivos de dados brutos do IMDb (opcional manter localmente apenas)
 data/*.tsv
+data/*.zip
 
 # Configurações de IDEs
 .vscode/

@@ -1,7 +1,6 @@
-# indices/arvore.py (MODIFICADO - Correção de Importação)
-
+# indices/arvore.py
 import pickle
-from src.filme import Filme # <-- MODIFICADO AQUI: Importa APENAS a classe Filme
+from src.filme import Filme 
 
 class BTreeNode:
     def __init__(self, t, is_leaf):

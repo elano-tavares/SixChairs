@@ -1,8 +1,8 @@
-# indices/hash.py (MODIFICADO - Correção de Importação)
+# indices/hash.py
 
 import pickle
 from collections import defaultdict
-from src.filme import Filme # <-- MODIFICADO AQUI: Importa APENAS a classe Filme
+from src.filme import Filme #
 from src.binary_store import ler_filme_por_offset
 
 #--------------------------------#
@@ -15,7 +15,6 @@ def construir_indice_hash_por_diretor(filmes: list[Filme]) -> dict[str, list[int
     """
     hash_diretor = defaultdict(list)
     for i, filme in enumerate(filmes): 
-        # Acessa TAMANHO_REGISTRO via Filme.TAMANHO_REGISTRO
         posicao = i * Filme.TAMANHO_REGISTRO 
         hash_diretor[filme.diretor].append(posicao)
     return hash_diretor

@@ -1,4 +1,4 @@
-# main.py (MODIFICADO)
+# main.py
 
 from pathlib import Path
 import sys

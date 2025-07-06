@@ -1,10 +1,9 @@
-# src/binary_store.py (MODIFICADO - Correção de Importação)
+# src/binary_store.py
 
 import csv
 from typing import List
-from src.filme import Filme # Importa apenas a classe Filme
+from src.filme import Filme
 
-# Caminho padrão do arquivo binário
 ARQUIVO_BINARIO = "data/filmes.bin"
 
 #-------------------------#

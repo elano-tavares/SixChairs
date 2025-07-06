@@ -71,9 +71,7 @@ def main():
         print("✅ Dados e índices carregados com sucesso de arquivos existentes.")
 
     # Inicia a interface de linha de comando, passando o index_builder
-    # A CLI agora gerenciará as interações de busca e importação
     menu_principal(index_builder, str(BIN_FILE))
 
-# Chama a função principal quando o script é executado
 if __name__ == "__main__":
     main()

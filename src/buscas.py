@@ -1,8 +1,7 @@
-# src/buscas.py (MODIFICADO - Correção de Importação)
+# src/buscas.py
 
 # Importa Filme para tipagem
-from src.filme import Filme # <-- MODIFICADO AQUI: Importa APENAS a classe Filme
-# Removido: , TAMANHO_REGISTRO (não é mais importado diretamente)
+from src.filme import Filme 
 
 # Importa as funções de busca de cada tipo de índice
 from indices.trie import buscar_titulos_por_prefixo 
@@ -11,8 +10,6 @@ from indices.arvore import buscar_filmes_por_ano_b_tree, buscar_filme_por_id_b_t
 
 # Importa a função de leitura de filmes do binary_store
 from src.binary_store import ler_filmes_binario 
-
-# Removido: import struct
 
 #--------------------#
 #  Busca por Gênero  #

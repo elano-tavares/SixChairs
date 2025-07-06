@@ -6,7 +6,6 @@ from src.index_builder import IndexBuilder
 from src.estatisticas import gerar_estatisticas
 from src.extrator import carregar_nome_diretores, carregar_diretores_por_titulo, extrair_filmes
 
-# ... (função exibir_resultados_paginados permanece a mesma) ...
 def exibir_resultados_paginados(filmes: list, itens_por_pagina: int = 10):
     """
     Exibe uma lista de filmes de forma paginada, permitindo ao usuário navegar

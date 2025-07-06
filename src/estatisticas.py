@@ -1,9 +1,8 @@
-# src/estatisticas.py (MODIFICADO - Correção de Importação)
+# src/estatisticas.py 
 
 import struct
 from collections import defaultdict, Counter
-from src.filme import Filme # <-- MODIFICADO AQUI: Importa APENAS a classe Filme
-# Removido: , TAMANHO_REGISTRO (não é mais importado diretamente)
+from src.filme import Filme 
 
 # FORMATO_REGISTRO pode ser removido se Filme.FORMATO_REGISTRO for usado,
 # mas para manter compatibilidade com o unpack local, deixamos por enquanto.
@@ -18,7 +17,6 @@ def gerar_estatisticas(caminho_bin="data/filmes.bin"):
     try:
         with open(caminho_bin, "rb") as f:
             while True:
-                # Acessa TAMANHO_REGISTRO via Filme.TAMANHO_REGISTRO
                 bytes_lidos = f.read(Filme.TAMANHO_REGISTRO) 
                 if not bytes_lidos:
                     break

@@ -8,21 +8,35 @@ from indices.trie import buscar_titulos_por_prefixo
 from indices.hash import buscar_filmes_por_diretor 
 from indices.arvore import buscar_filmes_por_ano_b_tree, buscar_filme_por_id_b_tree 
 
-# Importa a função de leitura de filmes do binary_store
-from src.binary_store import ler_filmes_binario 
-
 #--------------------#
 #  Busca por Gênero  #
 #--------------------#
 def buscar_filmes_por_genero(genero: str, caminho_bin="data/filmes.bin") -> list[Filme]:
+    """
+    Busca filmes por gênero fazendo uma varredura sequencial no arquivo binário,
+    sem carregá-lo inteiramente em memória.
+    """
     genero_lower = genero.lower() 
     resultados = []
 
-    filmes_completos = ler_filmes_binario(caminho_bin)
-    
-    for filme in filmes_completos:
-        if genero_lower in filme.genero.lower().split(','):
-            resultados.append(filme)
+    try:
+        with open(caminho_bin, "rb") as f:
+            while True:
+                # Lê um único registro (o tamanho de um filme) do arquivo
+                bytes_lidos = f.read(Filme.TAMANHO_REGISTRO) 
+                if not bytes_lidos:
+                    # Se não houver mais bytes para ler, chegamos ao fim do arquivo
+                    break
+                
+                # Converte os bytes lidos em um objeto Filme
+                filme = Filme.from_bytes(bytes_lidos)
+                
+                # Compara o gênero do filme com o gênero buscado
+                if genero_lower in filme.genero.lower().split(','):
+                    resultados.append(filme)
+    except FileNotFoundError:
+        print(f"⚠️  Arquivo binário não encontrado: {caminho_bin}")
+        
     return resultados
 
 #---------------------#
